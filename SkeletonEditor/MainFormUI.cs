@@ -81,7 +81,7 @@ namespace SkeletonEditor.UI
     // 标题
     Label lblTitle = new Label
     {
-        Text = "Skeleton Editor (Spine 3.4.02)",
+        Text = "Skeleton Editor",
         Font = new Font("Segoe UI", 16F, FontStyle.Bold),
         Location = new Point(20, yPos),
         AutoSize = true
@@ -129,19 +129,28 @@ namespace SkeletonEditor.UI
     };
     yPos += 110;
     
+    Label notice = new Label 
+    { 
+        Text = "以下调整均基于原始值基础调整,例如skel内本身缩放为3.0, 缩放填入0.8 写入文件后为2.4", 
+        Location = new Point(20, yPos), 
+        AutoSize = true,
+    };
+    
+    yPos += 40;
+    
     // 偏移调整区域（X和Y在同一行）
     Label lblOffset = new Label 
     { 
         Text = "偏移调整:", 
         Location = new Point(20, yPos), 
-        Size = new Size(labelWidth, 20),
+        Size = new Size(labelWidth, 30),
     };
     
     Label lblX = new Label 
     { 
         Text = "X:", 
         Location = new Point(20 + labelWidth, yPos), 
-        Size = new Size(30, 20),
+        Size = new Size(30, 30),
     };
     
     txtXOffset = new TextBox 
@@ -155,7 +164,7 @@ namespace SkeletonEditor.UI
     { 
         Text = "Y:", 
         Location = new Point(140 + labelWidth, yPos), 
-        Size = new Size(30, 20),
+        Size = new Size(30, 30),
     };
     
     txtYOffset = new TextBox 
@@ -171,7 +180,7 @@ namespace SkeletonEditor.UI
     { 
         Text = "缩放比例:", 
         Location = new Point(20, yPos), 
-        Size = new Size(labelWidth, 20),
+        Size = new Size(labelWidth, 30),
     };
     
     txtScale = new TextBox 
@@ -187,7 +196,7 @@ namespace SkeletonEditor.UI
     { 
         Text = "骨骼名称:", 
         Location = new Point(20, yPos), 
-        Size = new Size(labelWidth, 20),
+        Size = new Size(labelWidth, 30),
     };
     
     txtBoneName = new TextBox 
@@ -223,6 +232,7 @@ namespace SkeletonEditor.UI
         lblTitle, 
         lblFile, txtFilePath, btnBrowse,
         lblBoneInfo,
+        notice,
         lblOffset, lblX, txtXOffset, lblY, txtYOffset,
         lblScale, txtScale,
         lblBoneName, txtBoneName,

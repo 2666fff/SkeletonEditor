@@ -6,5 +6,7 @@ X轴偏移 Y轴偏移 X和Y的缩放scale.
 
 使用方法:
 拖入文件夹或者文件,文件夹则修改指定名称.skel 
+
+### 当前支持版本3.x-4.x
  
 ![image](https://github.com/user-attachments/assets/77e6e90d-15bd-47b7-8d29-d1b2c71d26ff)
