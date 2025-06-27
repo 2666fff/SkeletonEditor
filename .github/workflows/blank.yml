@@ -3,7 +3,7 @@ name: Build and Release Skeleton Editor
 on:
   push:
     tags:
-      - 'v*'  # 当推送以v开头的标签时触发，例如v1.0.0
+      - 'v*'  # 当推送以v开头的标签时触发
   workflow_dispatch:  # 允许手动触发
 
 env:
@@ -14,10 +14,16 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    
+    # 添加权限设置
+    permissions:
+      contents: write  # 关键修复：允许创建Release
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 获取完整历史记录以访问标签
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -37,14 +43,15 @@ jobs:
         id: get_version
         shell: pwsh
         run: |
-          $version = (Get-Item ./publish/SkeletonEditor.exe).VersionInfo.FileVersion
-          if (-not $version) { $version = "1.0.0" }
-          echo "version=$version" >> $env:GITHUB_OUTPUT
+          # 从标签获取版本 (格式 v1.2.3)
+          $tag_version = $env:GITHUB_REF -replace 'refs/tags/v', ''
+          echo "version=$tag_version" >> $env:GITHUB_OUTPUT
+          echo "Using tag version: $tag_version"
 
       - name: Create release artifact
         run: |
           $version = "${{ steps.get_version.outputs.version }}"
-          Compress-Archive -Path ./publish/* -DestinationPath SkeletonEditor-$version.zip
+          Compress-Archive -Path ./publish/* -DestinationPath "SkeletonEditor-$version.zip"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -52,25 +59,17 @@ jobs:
           name: SkeletonEditor
           path: SkeletonEditor-*.zip
 
-      - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1  # 使用更可靠的Release Action
+        if: startsWith(github.ref, 'refs/tags/v')
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          name: Skeleton Editor v${{ steps.get_version.outputs.version }}
+          body: "Auto-generated release for Skeleton Editor"
+          files: |
+            SkeletonEditor-*.zip
           draft: false
           prerelease: false
-
-      - name: Upload Release Asset
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: SkeletonEditor-*.zip
-          asset_name: SkeletonEditor-${{ steps.get_version.outputs.version }}.zip
-          asset_content_type: application/zip
