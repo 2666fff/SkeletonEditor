@@ -1,4 +1,4 @@
-﻿# SkeletonEditor
+![image](https://github.com/user-attachments/assets/dea42153-b52b-4ede-aab7-d115129b0940)﻿# SkeletonEditor
 本程序是用来修改 spine的skel二进制文件, 无须回转json重新生成.
 主要是修改 root节点的信息 包含:
 X轴偏移 Y轴偏移 X和Y的缩放scale.
@@ -9,5 +9,6 @@ X轴偏移 Y轴偏移 X和Y的缩放scale.
 
 ### 当前支持版本3.x-4.x
  
-![Uploading image.png…]()
 
+
+![image](https://github.com/user-attachments/assets/44d6676d-39ff-4039-9214-201a56344d58)
