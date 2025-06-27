@@ -1,0 +1,44 @@
+name: Build Skeleton Editor
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  BUILD_CONFIGURATION: 'Release'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore SkeletonEditor.csproj
+
+    - name: Build solution
+      run: dotnet build SkeletonEditor.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+    - name: Publish application
+      run: dotnet publish SkeletonEditor.csproj -c ${{ env.BUILD_CONFIGURATION }} -o ./publish --no-build
+
+    - name: Create release artifact
+      run: |
+        $version = (Get-Item publish/SkeletonEditor.exe).VersionInfo.FileVersion
+        Compress-Archive -Path ./publish/* -DestinationPath SkeletonEditor-$version.zip
+        
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SkeletonEditor
+        path: SkeletonEditor-*.zip
